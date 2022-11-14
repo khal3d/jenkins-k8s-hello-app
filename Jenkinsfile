@@ -1,5 +1,5 @@
 pipeline {
-  agent any {
+  agent {
     kubernetes {
       yamlFile 'JenkinsSlaveK8SPod.yaml'
       idleMinutes 5
