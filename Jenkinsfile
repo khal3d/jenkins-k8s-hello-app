@@ -6,31 +6,31 @@ pipeline {
     }
   }
   
+  environment {
+      APP="hello-app"
+      VERSION="1.0.0-snapshot"
+  }
   stages {
     stage('pre-build') {
       steps {
         container('hello-php') {
           sh '''
-          php -v
           echo "<?php phpinfo();" > hello.php
-          ls -alh
           '''
         }
       }
     }
-    
-    
+
     stage('kaniko-build') {
       steps {
         container('kaniko') {
           sh '''
-          ls -alh
-          /kaniko/executor -h
+          ls -alh /kaniko/.docker
+          /kaniko/executor --context `pwd` --dockerfile `pwd`/Dockerfile --destination=khal3d/${APP}:${timestamp}-${VERSION}
           '''
         }
       }
     }
-    
     
   }
 }
