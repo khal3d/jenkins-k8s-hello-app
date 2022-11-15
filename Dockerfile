@@ -1,4 +1,4 @@
-FROM php:8.1.11-alpine
+FROM php:8-alpine
 
 RUN apk update\
     && apk add --no-cache nano git curl bash\
