@@ -24,9 +24,10 @@ pipeline {
 
     stage('kaniko-build') {
       steps {
+        configs()
         container('kaniko') {
           sh '''
-          /kaniko/executor --cache=true --cache-ttl=6h --context `pwd` --dockerfile `pwd`/Dockerfile --destination=${registry}:${timestamp}-${version}
+          /kaniko/executor --context `pwd` --dockerfile `pwd`/Dockerfile --cache=true --cache-repo=${registry} --destination=${registry}:${timestamp}-${version} --destination=${registry}:latest
           '''
         }
       }
@@ -36,3 +37,9 @@ pipeline {
 }
 
 
+
+def configs(){
+    script{
+        env.timestamp=sh(script: 'date "+%Y%m%d%H%M%S"',  returnStdout: true).trim()
+    }
+}
