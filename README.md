@@ -1,1 +1,1 @@
-# jenkins-k8s-hello-app
+# hello-app (Jenkins & k8s)
