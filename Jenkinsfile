@@ -7,10 +7,32 @@ pipeline {
   }
   
   stages {
-    stage('build') {
+    stage('pre-build') {
       steps {
-        sh 'php --version'
+        container('hello-php') {
+          sh '''
+          php -v
+          echo "<?php phpinfo();" > hello.php
+          ls -alh
+          '''
+        }
       }
     }
+    
+    
+    stage('kaniko-build') {
+      steps {
+        container('kaniko') {
+          sh '''
+          ls -alh
+          /kaniko/executor -h
+          '''
+        }
+      }
+    }
+    
+    
   }
 }
+
+
