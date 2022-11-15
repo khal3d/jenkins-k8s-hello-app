@@ -7,8 +7,9 @@ pipeline {
   }
   
   environment {
-      APP="hello-app"
-      VERSION="1.0.0-snapshot"
+    app = "hello-app"
+    version = "1.0.0-snapshot"
+    registry = "khal3d/hello-app"
   }
   stages {
     stage('pre-build') {
@@ -25,8 +26,7 @@ pipeline {
       steps {
         container('kaniko') {
           sh '''
-          ls -alh /kaniko/.docker
-          /kaniko/executor --context `pwd` --dockerfile `pwd`/Dockerfile --destination=khal3d/${APP}:${timestamp}-${VERSION}
+          /kaniko/executor --cache=true --cache-ttl=6h --context `pwd` --dockerfile `pwd`/Dockerfile --destination=${registry}:${timestamp}-${version}
           '''
         }
       }
