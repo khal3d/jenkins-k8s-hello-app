@@ -10,3 +10,7 @@ RUN php -r "readfile('http://getcomposer.org/installer');" | php -- --install-di
 ENV PATH $PATH:/root/.composer/vendor/bin
 
 WORKDIR /var/www/html
+
+COPY app.php ./
+CMD php -S 0.0.0.0:80 app.php
+EXPOSE 80
