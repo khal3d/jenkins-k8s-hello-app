@@ -8,11 +8,12 @@ pipeline {
   
   environment {
     app = "hello-app"
-    version = "1.0.0-snapshot"
+    version="revision-${env.GIT_COMMIT[0..6]}"
     registry = "khal3d/hello-app"
   }
   
   stages {
+
     stage('kaniko-build') {
       steps {
         configs()
@@ -24,6 +25,17 @@ pipeline {
       }
     }
     
+    stage('helm-deploy') {
+      steps {
+        configs()
+        container('helm') {
+          sh '''
+          ls -alh
+          '''
+        }
+      }
+    }
+
   }
 }
 
