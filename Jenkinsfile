@@ -9,7 +9,8 @@ pipeline {
   environment {
     app = "hello-app"
     version="revision-${env.GIT_COMMIT[0..6]}"
-    registry = "khal3d/hello-app"
+    repo = "khal3d/hello-app"
+    localCRIRegistry = "cri-registry-docker-registry.tools.svc.cluster.local:5000"
   }
   
   stages {
@@ -19,7 +20,12 @@ pipeline {
         configs()
         container('kaniko') {
           sh '''
-          /kaniko/executor --context `pwd` --dockerfile `pwd`/Dockerfile --cache=true --cache-repo=${registry} --destination=${registry}:${timestamp}-${version} --destination=${registry}:latest
+          /kaniko/executor --context `pwd` --dockerfile `pwd`/Dockerfile\
+          --cache=true --cache-repo=${localCRIRegistry}/${repo}\
+          --destination=${localCRIRegistry}/${repo}:${version}\
+          --destination=${repo}:${timestamp}-${version}\
+          --destination=${repo}:${version}\
+          --destination=${repo}:latest
           '''
         }
       }
@@ -29,10 +35,10 @@ pipeline {
       steps {
         configs()
         container('helm') {
-          sh 'helm list'
+          sh 'helm -n default list'
           sh "helm lint ./helm"
-          sh "helm upgrade --wait --timeout 60 --set image.tag=${version} hello-app ./helm"
-          sh "helm list | grep hello-app"
+          sh "helm -n default upgrade --install --wait --timeout 60s --set image.tag=${version} hello-app ./helm"
+          sh "helm -n default get values hello-app"
         }
       }
     }
