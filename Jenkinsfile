@@ -29,9 +29,10 @@ pipeline {
       steps {
         configs()
         container('helm') {
-          sh '''
-          ls -alh
-          '''
+          sh 'helm list'
+          sh "helm lint ./helm"
+          sh "helm upgrade --wait --timeout 60 --set image.tag=${version} hello-app ./helm"
+          sh "helm list | grep hello-app"
         }
       }
     }
