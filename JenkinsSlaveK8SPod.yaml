@@ -33,8 +33,11 @@ spec:
       volumeMounts:
         - name: docker-config
           mountPath: /kaniko/.docker
+          readOnly: true
   volumes:
     - name: docker-config
-      configMap:
-        name: docker-config
-
+      secret:
+        secretName: docker-auth-config
+        items:
+        - key: .dockerconfigjson
+          path: config.json
