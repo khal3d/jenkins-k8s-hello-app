@@ -10,7 +10,8 @@ pipeline {
     app = "hello-app"
     version="revision-${env.GIT_COMMIT[0..6]}"
     repo = "khal3d/hello-app"
-    localCRIRegistry = "cri-registry-docker-registry.tools.svc.cluster.local:5000"
+    #localCRIRegistry = "cri-registry-docker-registry.tools.svc.cluster.local:5000"
+    localCRIRegistry = "index.docker.io"
   }
   
   stages {
